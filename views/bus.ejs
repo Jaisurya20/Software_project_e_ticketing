@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Booking - Ticketron</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+        header {
+            background-color: #d32f2f;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #fff;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            text-decoration: none;
+            color: #d32f2f;
+            font-weight: bold;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            color: #b71c1c;
+        }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .card {
+            background-color: white;
+            padding: 20px;
+            margin: 15px auto;
+            width: 350px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>Book Bus Tickets</header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/bus">Bus</a>
+        <a href="/train">Train</a>
+        <a href="/">Movies</a>
+        <a href="/tickets">My Tickets</a>
+    </nav>
+    <div class="container">
+        <h2>Search Available Buses</h2>
+        <input type="text" id="source" placeholder="Enter Source">
+        <input type="text" id="destination" placeholder="Enter Destination">
+        <input type="date" id="date">
+        <button onclick="searchBuses()">Search Buses</button>
+
+        <div id="busList" class="hidden">
+            <h2>Available Buses</h2>
+            <div id="busResults"></div>
+        </div>
+    </div>
+
+    <script>
+        function searchBuses() {
+            const source = document.getElementById('source').value.trim().toLowerCase();
+            const destination = document.getElementById('destination').value.trim().toLowerCase();
+            const date = document.getElementById('date').value.trim();
+
+            if (!source || !destination || !date) {
+                alert('Please enter source, destination, and date!');
+                return;
+            }
+
+            const buses = [
+                { name: "KPN Travels", source: "vellore", destination: "chennai", seats: 30, price: 500 },
+                { name: "Rathimeena", source: "thiruvarur", destination: "chennai", seats: 25, price: 600 },
+                { name: "Radhamani", source: "thiruvarur", destination: "chennai", seats: 40, price: 550 }
+            ];
+
+            let results = "";
+            let found = false;
+
+            buses.forEach(bus => {
+                if (bus.source === source && bus.destination === destination) {
+                    found = true;
+                    results += `
+                        <div class="card">
+                            <h3>${bus.name}</h3>
+                            <p><strong>Source:</strong> ${bus.source.charAt(0).toUpperCase() + bus.source.slice(1)}</p>
+                            <p><strong>Destination:</strong> ${bus.destination.charAt(0).toUpperCase() + bus.destination.slice(1)}</p>
+                            <p><strong>Date:</strong> ${date}</p>
+                            <p><strong>No. of Seats:</strong> ${bus.seats}</p>
+                            <p><strong>Price per Seat:</strong> ₹${bus.price}</p>
+                            <input type="text" id="name-${bus.name}" placeholder="Enter Your Name">
+                            <input type="number" id="seats-${bus.name}" min="1" max="${bus.seats}" placeholder="No. of Seats">
+                            <button onclick="bookBus('${bus.name}', '${bus.source}', '${bus.destination}', ${bus.seats}, ${bus.price}, '${date}')">Book Now</button>
+                        </div>
+                    `;
+                }
+            });
+
+            document.getElementById('busResults').innerHTML = found ? results : '<p>No buses found for this route.</p>';
+            document.getElementById('busList').classList.remove('hidden');
+        }
+
+        function bookBus(busName, source, destination, seats, price, date) {
+            const userName = document.getElementById(`name-${busName}`).value;
+            const numSeats = document.getElementById(`seats-${busName}`).value;
+
+            if (!userName || !numSeats) {
+                alert('Please fill in your name and number of seats!');
+                return;
+            }
+
+            const totalPrice = numSeats * price;
+
+            window.location.href = `/payment?bus=${busName}&source=${source}&destination=${destination}&seats=${numSeats}&name=${userName}&date=${date}&price=${totalPrice}`;
+        }
+    </script>
+</body>
+</html>
+
+
+

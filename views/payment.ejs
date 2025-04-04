@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Ticketron</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            color: #333;
+        }
+        header {
+            background-color: #c62828;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .container {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .payment-box {
+            background-color: white;
+            padding: 25px;
+            margin: 40px auto;
+            width: 350px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            font-size: 16px;
+        }
+        h2 {
+            color: #c62828;
+            margin-bottom: 20px;
+        }
+        .payment-box p {
+            margin-bottom: 15px;
+        }
+        .payment-box p strong {
+            color: #555;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #c62828;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+        .back-link {
+            text-decoration: none;
+            color: #c62828;
+            font-size: 16px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Payment Confirmation</h1>
+    </header>
+
+    <div class="container">
+        <h2>Review Your Booking</h2>
+
+        <div class="payment-box" id="paymentDetails">
+            <p><strong>Event:</strong> <span id="eventName"></span></p>
+            <div id="routeInfo"></div>
+            <p><strong>Name:</strong> <span id="name"></span></p>
+            <p><strong>Seats:</strong> <span id="seats"></span></p>
+            <p><strong>Date:</strong> <span id="date"></span></p>
+            <p><strong>Price:</strong> ₹<span id="price"></span></p>
+        </div>
+
+        <button onclick="completePayment()">Complete Payment</button>
+
+        <a href="/" class="back-link">Back to Home</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Ticketron | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const eventName = params.get("event") || "N/A";
+        const name = params.get("name") || "N/A";
+        const seats = parseInt(params.get("seats")) || 0;
+        const date = params.get("date") || "N/A";
+        const pricePerSeat = parseInt(params.get("price")) || 100; // Default price if not provided
+
+        const source = params.get("source");
+        const destination = params.get("destination");
+        const city = params.get("city");
+        const theater = params.get("theater");
+
+        document.getElementById("eventName").innerText = eventName;
+        document.getElementById("name").innerText = name;
+        document.getElementById("seats").innerText = seats;
+        document.getElementById("date").innerText = date;
+        document.getElementById("price").innerText = seats * pricePerSeat;
+
+        const routeInfo = document.getElementById("routeInfo");
+
+        if (source && destination) {
+            routeInfo.innerHTML = `<p><strong>Source:</strong> ${source}</p>
+                                   <p><strong>Destination:</strong> ${destination}</p>`;
+        } else if (city && theater) {
+            routeInfo.innerHTML = `<p><strong>City:</strong> ${city}</p>
+                                   <p><strong>Theater:</strong> ${theater}</p>`;
+        } else {
+            routeInfo.innerHTML = "<p>Invalid Booking Info!</p>";
+        }
+
+        function completePayment() {
+            alert("Payment successful! 🎉 Your ticket is booked.");
+
+            const bookedTickets = JSON.parse(localStorage.getItem("bookedTickets")) || [];
+
+            const newTicket = {
+                event: eventName,
+                name: name,
+                seats: seats,
+                date: date,
+                price: seats * pricePerSeat
+            };
+
+            if (source && destination) {
+                newTicket.source = source;
+                newTicket.destination = destination;
+            }
+
+            if (city && theater) {
+                newTicket.city = city;
+                newTicket.theater = theater;
+            }
+
+            bookedTickets.push(newTicket);
+            localStorage.setItem("bookedTickets", JSON.stringify(bookedTickets));
+
+            window.location.href = "/tickets";
+        }
+    </script>
+
+</body>
+</html>

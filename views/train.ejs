@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Booking - Ticketron</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .container {
+            padding: 20px;
+            width: 80%;
+            margin: 0 auto;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-box input, .search-box button {
+            padding: 12px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .search-box button {
+            background-color: #d32f2f;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .search-box button:hover {
+            background-color: #b71c1c;
+        }
+        .train-list {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .train-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .train-card h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .train-card .details {
+            font-size: 14px;
+            color: #555;
+        }
+        .train-card .seats {
+            font-size: 16px;
+            color: #d32f2f;
+        }
+        .train-card button {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .train-card button:hover {
+            background-color: #388e3c;
+        }
+        .booking-form {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .booking-form input, .booking-form select, .booking-form button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .booking-form button {
+            background-color: #d32f2f;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .booking-form button:hover {
+            background-color: #b71c1c;
+        }
+        .back-to-home {
+            display: block;
+            margin-top: 20px;
+            color: #d32f2f;
+            text-align: center;
+            text-decoration: none;
+        }
+        .back-to-home:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<header>Train Ticket Booking</header>
+
+<div class="container">
+    <div class="search-box">
+        <input type="text" id="source" placeholder="Enter Source">
+        <input type="text" id="destination" placeholder="Enter Destination">
+        <input type="date" id="date">
+        <button onclick="searchTrains()">Search Trains</button>
+    </div>
+
+    <div id="trainList" class="train-list"></div>
+
+    <div id="bookingForm" class="booking-form">
+        <h2>Enter Passenger Details</h2>
+        <input type="hidden" id="selectedTrain">
+        <input type="hidden" id="trainPrice">
+
+        <label>Your Name:</label>
+        <input type="text" id="name" required>
+
+        <label>Number of Seats:</label>
+        <input type="number" id="seats" min="1" required>
+
+        <label>Select Class:</label>
+        <select id="class">
+            <option value="General">General</option>
+            <option value="TATKAL">TATKAL</option>
+            <option value="Ladies">Ladies</option>
+        </select>
+
+        <p><strong>Total Price: ₹<span id="totalPrice">0</span></strong></p>
+
+        <button onclick="proceedToPayment()">Proceed to Payment</button>
+    </div>
+
+    <a href="/" class="back-to-home">Back to Home</a>
+</div>
+
+<script>
+    let trains = [
+        { id: "train1", name: "17408 Pamani Express", source: "Thiruvarur", destination: "Tirupathi", seats: 40, price: 450 },
+        { id: "train2", name: "22650 Yercaud SF Express", source: "Erode", destination: "Katpadi", seats: 35, price: 500 },
+        { id: "train3", name: "16381 Kanyakumari Express", source: "Katpadi", destination: "Coimbatore", seats: 50, price: 550 }
+    ];
+
+    function searchTrains() {
+        let source = document.getElementById('source').value.trim().toLowerCase();
+        let destination = document.getElementById('destination').value.trim().toLowerCase();
+        let date = document.getElementById('date').value;
+
+        if (!source || !destination || !date) {
+            alert("⚠️ Please enter Source, Destination, and Date!");
+            return;
+        }
+
+        let results = "";
+        let found = false;
+
+        trains.forEach(train => {
+            if (train.source.toLowerCase() === source && train.destination.toLowerCase() === destination) {
+                found = true;
+                results += `
+                    <div class="train-card" id="${train.id}">
+                        <div>
+                            <h3>${train.name}</h3>
+                            <p class="details">Source: ${train.source} | Destination: ${train.destination}</p>
+                            <p class="details">Date: ${date}</p>
+                            <p class="seats">Available Seats: <span id="seats-${train.id}">${train.seats}</span></p>
+                            <p class="details"><strong>Price per Seat: ₹${train.price}</strong></p>
+                        </div>
+                        <button onclick="showBookingForm('${train.id}', ${train.price}, '${date}')">Book Now</button>
+                    </div>
+                `;
+            }
+        });
+
+        document.getElementById('trainList').innerHTML = found ? results : '<p>No trains found for this route.</p>';
+        document.getElementById('trainList').style.display = 'block';
+    }
+
+    function showBookingForm(trainId, price, date) {
+        document.getElementById('selectedTrain').value = trainId;
+        document.getElementById('trainPrice').value = price;
+        document.getElementById('totalPrice').innerText = price;
+        document.getElementById('bookingForm').style.display = 'block';
+
+        document.getElementById('seats').addEventListener('input', function () {
+            let numSeats = parseInt(this.value) || 1;
+            document.getElementById('totalPrice').innerText = numSeats * price;
+        });
+    }
+
+    function proceedToPayment() {
+        let trainId = document.getElementById('selectedTrain').value;
+        let name = document.getElementById('name').value;
+        let seats = document.getElementById('seats').value;
+        let totalPrice = document.getElementById('totalPrice').innerText;
+
+        if (!name || !seats || seats < 1) {
+            alert("⚠️ Please enter valid details!");
+            return;
+        }
+
+        alert("✅ Booking successful! Redirecting to payment...");
+        window.location.href = `/payment?train=${trainId}&name=${name}&seats=${seats}&price=${totalPrice}`;
+    }
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Booking - Ticketron</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #d32f2f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .event-card {
+            background-color: white;
+            padding: 15px;
+            margin: 15px auto;
+            width: 280px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        .event-card:hover {
+            transform: scale(1.05);
+        }
+        .event-card h3 {
+            margin: 0;
+            color: #d32f2f;
+        }
+        .event-card p {
+            margin: 8px 0;
+        }
+        button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+        #bookingForm {
+            margin-top: 20px;
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Book Movie Tickets</h1>
+    </header>
+
+    <div class="container">
+        <h2>Select Your Movie</h2>
+
+        <div class="event-card">
+            <h3>Movie: Retro</h3>
+            <p><strong>City:</strong> Vellore</p>
+            <p><strong>Theater:</strong> INOX</p>
+            <p><strong>Price:</strong> ₹200</p>
+            <p>Available Seats: 50</p>
+            <button onclick="showBookingForm('Retro', 'Vellore', 'INOX', 200, 50)">Book Now</button>
+        </div>
+
+        <div class="event-card">
+            <h3>Movie: Jana Nayagan</h3>
+            <p><strong>City:</strong> Vellore</p>
+            <p><strong>Theater:</strong> Vishnu Cinemas</p>
+            <p><strong>Price:</strong> ₹180</p>
+            <p>Available Seats: 40</p>
+            <button onclick="showBookingForm('Jana Nayagan', 'Vellore', 'Vishnu Cinemas', 180, 40)">Book Now</button>
+        </div>
+
+        <div class="event-card">
+            <h3>Movie: Good Bad Ugly</h3>
+            <p><strong>City:</strong> Katpadi</p>
+            <p><strong>Theater:</strong> PVR</p>
+            <p><strong>Price:</strong> ₹250</p>
+            <p>Available Seats: 60</p>
+            <button onclick="showBookingForm('Good Bad Ugly', 'Katpadi', 'PVR', 250, 60)">Book Now</button>
+        </div>
+
+        <div id="bookingForm">
+            <h2>Enter Booking Details</h2>
+            <form id="bookingFormData" action="/payment" method="GET">
+                <input type="hidden" name="event" id="eventName">
+                <input type="hidden" name="city" id="cityName">
+                <input type="hidden" name="theater" id="theaterName">
+                <input type="hidden" name="price" id="ticketPrice">
+                <input type="hidden" name="availableSeats" id="availableSeats">
+                
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="date">Show Date:</label>
+                <input type="date" id="date" name="date" required>
+                
+                <label for="seats">Number of Seats:</label>
+                <input type="number" id="seats" name="seats" min="1" required>
+                
+                <p><strong>Total Price: ₹<span id="totalPrice">0</span></strong></p>
+                
+                <button type="submit">Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showBookingForm(eventName, city, theater, price, seats) {
+            document.getElementById('eventName').value = eventName;
+            document.getElementById('cityName').value = city;
+            document.getElementById('theaterName').value = theater;
+            document.getElementById('ticketPrice').value = price;
+            document.getElementById('availableSeats').value = seats;
+            document.getElementById('totalPrice').innerText = price;
+            document.getElementById('bookingForm').style.display = 'block';
+        }
+
+        document.getElementById('seats').addEventListener('input', function () {
+            let price = document.getElementById('ticketPrice').value;
+            let seats = this.value;
+            document.getElementById('totalPrice').innerText = price * seats;
+        });
+    </script>
+</body>
+</html>

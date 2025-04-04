@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticketron - E-Ticketing System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #d32f2f;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+        }
+        .user-info {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: white;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #fff;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            text-decoration: none;
+            color: #d32f2f;
+            font-weight: bold;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        nav a:hover {
+            color: #b71c1c;
+        }
+        .container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 20px;
+            width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        .card h2 {
+            color: #d32f2f;
+        }
+        .card button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .card button:hover {
+            background-color: #b71c1c;
+        }
+        .logout-btn {
+            background-color: #f44336;
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        Ticketron - Your Travel Booking Partner
+        <div id="userInfo" class="user-info"></div>
+    </header>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/bus">Bus</a>
+        <a href="/train">Train</a>
+        <a href="/movie">Movies</a>
+        <a href="/tickets">My Tickets</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>Bus Tickets</h2>
+            <p>Find and book top-rated bus services.</p>
+            <button onclick="window.location.href='/bus'">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Train Tickets</h2>
+            <p>Reserve your train tickets effortlessly.</p>
+            <button onclick="window.location.href='/train'">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Movie Tickets</h2>
+            <p>Watch the latest movies near you.</p>
+            <button onclick="window.location.href='/movie'">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>View My Tickets</h2>
+            <p>Check and manage your bookings.</p>
+            <button onclick="window.location.href='/tickets'">View Tickets</button>
+        </div>
+    </div>
+
+    <footer>&copy; 2025 Ticketron. All rights reserved.</footer>
+
+    <script>
+        // Check if user is logged in
+        const loggedInUser = localStorage.getItem("loggedInUser");
+
+        if (loggedInUser) {
+            document.getElementById("userInfo").innerHTML = `
+                <strong>Welcome, ${loggedInUser}!</strong>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            `;
+        } else {
+            window.location.href = "/login";
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            alert("You have been logged out! 👋");
+            window.location.href = "/login";
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+

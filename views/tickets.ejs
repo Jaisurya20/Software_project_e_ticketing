@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Tickets - Ticketron</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        header, footer {
+            background-color: #c62828; /* Red theme */
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .ticket-card {
+            background-color: white;
+            padding: 15px;
+            margin: 10px auto;
+            width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+        .return-btn {
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 20px;
+        }
+        .ticket-card p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        .ticket-card h4 {
+            color: #c62828;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>My Tickets</h1>
+    </header>
+
+    <div class="container">
+        <h2>Your Booked Tickets 🎟️</h2>
+
+        <div id="ticketsList"></div>
+
+        <a href="/"><button class="return-btn">Return to Home</button></a>
+    </div>
+
+    <script>
+        let tickets = JSON.parse(localStorage.getItem("bookedTickets")) || [];
+        const ticketsList = document.getElementById("ticketsList");
+
+        function displayTickets() {
+            ticketsList.innerHTML = "";  
+
+            if (tickets.length > 0) {
+                tickets.forEach((ticket, index) => {
+                    ticketsList.innerHTML += `
+                        <div class="ticket-card" id="ticket-${index}">
+                            <h4>${ticket.event}</h4>
+                            ${ticket.source && ticket.destination ? `
+                                <p><strong>Source:</strong> ${ticket.source}</p>
+                                <p><strong>Destination:</strong> ${ticket.destination}</p>
+                            ` : ''}
+                            ${ticket.city && ticket.theater ? `
+                                <p><strong>City:</strong> ${ticket.city}</p>
+                                <p><strong>Theater:</strong> ${ticket.theater}</p>
+                            ` : ''}
+                            <p><strong>Name:</strong> ${ticket.name}</p>
+                            <p><strong>Seats:</strong> ${ticket.seats}</p>
+                            <p><strong>Price:</strong> ₹${ticket.price}</p>
+                            <button onclick="cancelBooking(${index})">Cancel Booking</button>
+                        </div>
+                    `;
+                });
+            } else {
+                ticketsList.innerHTML = "<p>No tickets booked yet! 😢</p>";
+            }
+        }
+
+        displayTickets();
+
+        function cancelBooking(index) {
+            const confirmation = confirm("Are you sure you want to cancel this booking?");
+            if (confirmation) {
+                tickets.splice(index, 1);
+                localStorage.setItem("bookedTickets", JSON.stringify(tickets));
+                alert("Your payment will be refunded within 3-5 business days. 💸");
+                displayTickets();
+            }
+        }
+    </script>
+
+</body>
+</html>
